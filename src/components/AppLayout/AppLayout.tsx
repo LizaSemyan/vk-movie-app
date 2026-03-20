@@ -1,7 +1,9 @@
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import { Link, Outlet } from "react-router-dom";
+import { AppRoutes } from "../../application";
 
 const AppLayout = () => {
+  const navItems = AppRoutes.filter((route) => route.showInNav);
   return (
     <>
       <AppBar position="static">
@@ -10,15 +12,14 @@ const AppLayout = () => {
             Movie App
           </Typography>
 
-          <Button color="inherit" component={Link} to="/">
-            Movies
-          </Button>
-          <Button color="inherit" component={Link} to="/favorites">
-            Favorites
-          </Button>
-          <Button color="inherit" component={Link} to="/compare">
-            Compare
-          </Button>
+          {navItems.map((route) => {
+            const to = route.index ? "/" : `/${route.path}`;
+            return (
+              <Button color="inherit" component={Link} to={to} key={to}>
+                {route.label}
+              </Button>
+            );
+          })}
         </Toolbar>
       </AppBar>
 

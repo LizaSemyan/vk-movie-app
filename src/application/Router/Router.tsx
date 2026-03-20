@@ -1,17 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
-import { MoviesPage, MoviePage, FavoritesPage, ComparePage } from "../../pages";
 import { AppLayout } from "../../components";
+import AppRoutes from "../AppRoutes";
 
 const Router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
-    children: [
-      { index: true, element: <MoviesPage /> },
-      { path: "/movie/:id", element: <MoviePage /> },
-      { path: "/favorites", element: <FavoritesPage /> },
-      { path: "/compare", element: <ComparePage /> },
-    ],
+    children: AppRoutes,
   },
 ]);
 
