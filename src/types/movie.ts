@@ -45,6 +45,22 @@ export type MovieDetails = {
   premiere?: MoviePremiere | null;
 };
 
+export type MovieFilters = {
+  genres: string[];
+  ratingFrom?: number;
+  ratingTo?: number;
+  yearFrom?: number;
+  yearTo?: number;
+};
+
+export const createEmptyFilters = (): MovieFilters => ({
+  genres: [],
+  ratingFrom: undefined,
+  ratingTo: undefined,
+  yearFrom: undefined,
+  yearTo: undefined,
+});
+
 export type MoviesQueryParams = {
   limit?: number;
   next?: string;

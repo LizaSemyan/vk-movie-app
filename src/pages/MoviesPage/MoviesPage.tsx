@@ -1,9 +1,33 @@
-import { useEffect, useRef } from "react";
-import { useMovies } from "../../hooks/useMovies";
-import { MovieCard } from "../../components";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
 
+import { useMovies } from "../../hooks/useMovies";
+import { useMovieFilters } from "../../hooks/useMovieFilters";
+import { mapMovieFiltersToQueryParams } from "../../utils/mapMovieFilters";
+import { MovieCard, MoviesFilters } from "../../components";
+import { createEmptyFilters, type MovieFilters } from "../../types/movie";
+import { validateMovieFilters as validateFilters } from "../../utils/validateMovieFilters";
+import { MOVIE_GENRE_OPTIONS } from "../../constants/movieGenres";
+
 const MoviesPage = () => {
+  const { filters, setFilters, resetFilters } = useMovieFilters();
+
+  const [draftFilters, setDraftFilters] = useState<MovieFilters>(filters);
+
+  useEffect(() => {
+    setDraftFilters(filters);
+  }, [filters]);
+
+  const validationErrors = useMemo(() => {
+    return validateFilters(draftFilters);
+  }, [draftFilters]);
+
+  const hasValidationErrors = Object.keys(validationErrors).length > 0;
+
+  const moviesQueryParams = useMemo(() => {
+    return mapMovieFiltersToQueryParams(filters);
+  }, [filters]);
+
   const {
     data,
     isLoading,
@@ -12,7 +36,7 @@ const MoviesPage = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useMovies({ limit: 50 });
+  } = useMovies(moviesQueryParams);
 
   const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -45,50 +69,74 @@ const MoviesPage = () => {
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  const handleFilters = () => {
+    if (hasValidationErrors) {
+      return;
+    }
+
+    setFilters(draftFilters);
+  };
+
+  const handleResetFilters = () => {
+    const emptyFilters = createEmptyFilters();
+
+    setDraftFilters(emptyFilters);
+    resetFilters();
+  };
+
   const errorMessage =
     error instanceof Error ? error.message : "Неизвестная ошибка";
 
-  if (isLoading) {
-    return <Box>Загрузка фильмов...</Box>;
-  }
-
-  if (isError) {
-    return <Box>Ошибка: {errorMessage}</Box>;
-  }
-
-  if (movies.length === 0) {
-    return <Box>Фильмы не найдены</Box>;
-  }
-
   return (
     <Box>
-      <Typography variant="h4">Фильмы</Typography>
+      <Typography variant="h4" sx={{ mb: 2 }}>
+        Фильмы
+      </Typography>
 
-      <Box
-        sx={{
-          display: "grid",
-          width: "80%",
-          mx: "auto",
-          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          gap: 2,
-        }}
-      >
-        {movies.map((movie) => {
-          return <MovieCard key={movie.id} movie={movie} />;
-        })}
-      </Box>
-      <Box ref={observerRef} sx={{ height: 1 }} />
+      <MoviesFilters
+        value={draftFilters}
+        errors={validationErrors}
+        genreOptions={MOVIE_GENRE_OPTIONS}
+        onChange={setDraftFilters}
+        onApply={handleFilters}
+        onReset={handleResetFilters}
+        applyDisabled={hasValidationErrors}
+      />
+      {isLoading ? (
+        <Box>Загрузка фильмов...</Box>
+      ) : isError ? (
+        <Box>Ошибка: {errorMessage}</Box>
+      ) : movies.length === 0 ? (
+        <Box>Фильмы не найдены</Box>
+      ) : (
+        <>
+          <Box
+            sx={{
+              display: "grid",
+              width: "80%",
+              mx: "auto",
+              gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+              gap: 2,
+            }}
+          >
+            {movies.map((movie) => {
+              return <MovieCard key={movie.id} movie={movie} />;
+            })}
+          </Box>
+          <Box ref={observerRef} sx={{ height: 1 }} />
 
-      {isFetchingNextPage && (
-        <Typography sx={{ mt: 2, textAlign: "center" }}>
-          Загружаем ещё...
-        </Typography>
-      )}
+          {isFetchingNextPage && (
+            <Typography sx={{ mt: 2, textAlign: "center" }}>
+              Загружаем ещё...
+            </Typography>
+          )}
 
-      {!hasNextPage && movies.length > 0 && (
-        <Typography sx={{ mt: 2, textAlign: "center" }}>
-          Фильмы закончились
-        </Typography>
+          {!hasNextPage && movies.length > 0 && (
+            <Typography sx={{ mt: 2, textAlign: "center" }}>
+              Фильмы закончились
+            </Typography>
+          )}
+        </>
       )}
     </Box>
   );
