@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 import { useMovies } from "../../hooks/useMovies";
 import { useMovieFilters } from "../../hooks/useMovieFilters";
@@ -10,6 +11,7 @@ import { validateMovieFilters as validateFilters } from "../../utils/validateMov
 import { MOVIE_GENRE_OPTIONS } from "../../constants/movieGenres";
 
 const MoviesPage = () => {
+  const location = useLocation();
   const { filters, setFilters, resetFilters } = useMovieFilters();
 
   const [draftFilters, setDraftFilters] = useState<MovieFilters>(filters);
@@ -37,6 +39,25 @@ const MoviesPage = () => {
     hasNextPage,
     isFetchingNextPage,
   } = useMovies(moviesQueryParams);
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
+    const savedScrollY = sessionStorage.getItem("moviesPageScrollY");
+
+    if (!savedScrollY) {
+      return;
+    }
+
+    window.scrollTo({
+      top: Number(savedScrollY),
+      behavior: "auto",
+    });
+
+    sessionStorage.removeItem("moviesPageScrollY");
+  }, [isLoading, location.key]);
 
   const observerRef = useRef<HTMLDivElement | null>(null);
 
