@@ -16,5 +16,34 @@ export const theme = createTheme({
         },
       },
     },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#c9d1de",
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          color: "#c9d1de",
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#61656b",
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#c9d1de",
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#c9d1de",
+          },
+        },
+      },
+    },
   },
 });
