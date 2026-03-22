@@ -1,4 +1,5 @@
 import { Box, Chip, Stack, Typography } from "@mui/material";
+import MovieIcon from "@mui/icons-material/Movie";
 import type { MovieListItem } from "../../types/movie";
 import { getMovieListItemMeta } from "../../utils/getMovieListItemMeta";
 import {
@@ -132,16 +133,63 @@ const CompareTable = ({ comparedMovies }: CompareTableProps) => {
               },
             }}
           >
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 700,
-                color: "#fff",
-                textAlign: { xs: "left", md: "center" },
-              }}
-            >
-              {meta?.title || "Не выбран фильм для сравнения"}
-            </Typography>
+            <Stack spacing={2} alignItems={{ xs: "flex-start", md: "center" }}>
+              <Box
+                sx={{
+                  width: 120,
+                  aspectRatio: "2 / 3",
+                  borderRadius: 2,
+                  overflow: "hidden",
+                  backgroundColor: "#2c2a2a",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {meta?.posterUrl ? (
+                  <Box
+                    component="img"
+                    src={meta.posterUrl}
+                    alt={meta.title}
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                ) : (
+                  <Stack
+                    spacing={1}
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      color: "rgba(255,255,255,0.65)",
+                      px: 1,
+                      textAlign: "center",
+                    }}
+                  >
+                    <MovieIcon sx={{ fontSize: 36 }} />
+                    <Typography variant="caption">
+                      Постер отсутствует
+                    </Typography>
+                  </Stack>
+                )}
+              </Box>
+
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  color: "#fff",
+                  textAlign: { xs: "left", md: "center" },
+                }}
+              >
+                {meta?.title ?? "Не выбран фильм для сравнения"}
+              </Typography>
+            </Stack>
           </Box>
         ))}
       </Box>
