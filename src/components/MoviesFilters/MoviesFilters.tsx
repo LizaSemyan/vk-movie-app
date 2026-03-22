@@ -81,7 +81,7 @@ const MoviesFilters = ({
         backgroundColor: "#1e1d1d",
         boxShadow: 1,
         color: "#ffffff",
-        width: "80%",
+        width: { xs: "95%", sm: "80%" },
         mr: "auto",
         ml: "auto",
         boxSizing: "border-box",

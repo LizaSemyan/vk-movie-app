@@ -16,12 +16,12 @@ const ComparePage = () => {
           alignItems="center"
           justifyContent="center"
           sx={{
-            width: "80%",
+            width: { xs: "95%", sm: "80%" },
             minHeight: 300,
             borderRadius: 3,
             backgroundColor: "#1e1d1d",
             textAlign: "center",
-            px: 3,
+            px: { xs: 2, sm: 3 },
             mx: "auto",
             boxSizing: "border-box",
           }}
@@ -43,11 +43,10 @@ const ComparePage = () => {
         <Stack
           spacing={3}
           sx={{
-            width: "80%",
+            width: { xs: "95%", sm: "80%" },
             minHeight: 300,
             borderRadius: 3,
             textAlign: "center",
-            px: 3,
             mx: "auto",
             boxSizing: "border-box",
           }}
@@ -57,7 +56,10 @@ const ComparePage = () => {
             выбранный фильм автоматически удаляется из сравнения.
           </Typography>
 
-          <Stack direction="row" justifyContent="flex-end">
+          <Stack
+            direction="row"
+            justifyContent={{ xs: "center", sm: "flex-end" }}
+          >
             <Button variant="outlined" onClick={clearCompare}>
               Очистить сравнение
             </Button>

@@ -9,7 +9,12 @@ const Navbar = () => {
     <>
       <AppBar position="static">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h6">Movie App</Typography>
+          <Typography
+            variant="h6"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          >
+            Movie App
+          </Typography>
 
           <Box sx={{ display: "flex", gap: 1 }}>
             {navItems.map((route) => {
@@ -21,7 +26,7 @@ const Navbar = () => {
                   to={to}
                   key={to}
                   sx={{
-                    px: 2,
+                    px: { xs: 1, sm: 2 },
                     borderRadius: 2,
                     "&:hover": {
                       backgroundColor: "#b23bd069",

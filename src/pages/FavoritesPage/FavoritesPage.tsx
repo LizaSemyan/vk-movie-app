@@ -17,7 +17,7 @@ const FavoritesPage = () => {
           alignItems="center"
           justifyContent="center"
           sx={{
-            width: "80%",
+            width: { xs: "95%", sm: "80%" },
             minHeight: 300,
             borderRadius: 3,
             backgroundColor: "#1e1d1d",
@@ -39,7 +39,7 @@ const FavoritesPage = () => {
         <Box
           sx={{
             display: "grid",
-            width: "80%",
+            width: { xs: "95%", sm: "80%" },
             mx: "auto",
             gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
             gap: 2,
