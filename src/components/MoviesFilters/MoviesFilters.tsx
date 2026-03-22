@@ -84,6 +84,7 @@ const MoviesFilters = ({
         width: "80%",
         mr: "auto",
         ml: "auto",
+        boxSizing: "border-box",
       }}
     >
       <Typography variant="h6" sx={{ mb: 2 }}>

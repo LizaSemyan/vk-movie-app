@@ -4,17 +4,32 @@ import { useLocation } from "react-router-dom";
 
 import { useMovies } from "../../hooks/useMovies";
 import { useMovieFilters } from "../../hooks/useMovieFilters";
+import { useFavorites } from "../../hooks/useFavorites";
 import { mapMovieFiltersToQueryParams } from "../../utils/mapMovieFilters";
-import { MovieCard, MoviesFilters } from "../../components";
-import { createEmptyFilters, type MovieFilters } from "../../types/movie";
+import {
+  MovieCard,
+  MoviesFilters,
+  AddToFavoritesModal,
+} from "../../components";
+import {
+  createEmptyFilters,
+  type MovieFilters,
+  type MovieListItem,
+} from "../../types/movie";
 import { validateMovieFilters as validateFilters } from "../../utils/validateMovieFilters";
 import { MOVIE_GENRE_OPTIONS } from "../../constants/movieGenres";
 
 const MoviesPage = () => {
   const location = useLocation();
   const { filters, setFilters, resetFilters } = useMovieFilters();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   const [draftFilters, setDraftFilters] = useState<MovieFilters>(filters);
+  const [selectedMovie, setSelectedMovie] = useState<MovieListItem | null>(
+    null,
+  );
+  const [isAddToFavoritesModalOpen, setIsAddToFavoritesModalOpen] =
+    useState(false);
 
   useEffect(() => {
     setDraftFilters(filters);
@@ -105,6 +120,21 @@ const MoviesPage = () => {
     resetFilters();
   };
 
+  const handleOpenAddToFavoritesModal = (movie: MovieListItem) => {
+    setSelectedMovie(movie);
+    setIsAddToFavoritesModalOpen(true);
+  };
+
+  const handleCloseAddToFavoritesModal = () => {
+    setIsAddToFavoritesModalOpen(false);
+    setSelectedMovie(null);
+  };
+
+  const handleConfirmAddToFavorites = (movie: MovieListItem) => {
+    addFavorite(movie);
+    handleCloseAddToFavoritesModal();
+  };
+
   const errorMessage =
     error instanceof Error ? error.message : "Неизвестная ошибка";
 
@@ -141,7 +171,15 @@ const MoviesPage = () => {
             }}
           >
             {movies.map((movie) => {
-              return <MovieCard key={movie.id} movie={movie} />;
+              return (
+                <MovieCard
+                  key={movie.id}
+                  movie={movie}
+                  isFavorite={isFavorite(movie.id)}
+                  onAddToFavorites={handleOpenAddToFavoritesModal}
+                  onRemoveFromFavorites={removeFavorite}
+                />
+              );
             })}
           </Box>
           <Box ref={observerRef} sx={{ height: 1 }} />
@@ -159,6 +197,12 @@ const MoviesPage = () => {
           )}
         </>
       )}
+      <AddToFavoritesModal
+        open={isAddToFavoritesModalOpen}
+        movie={selectedMovie}
+        onClose={handleCloseAddToFavoritesModal}
+        onConfirm={handleConfirmAddToFavorites}
+      />
     </Box>
   );
 };

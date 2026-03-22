@@ -1,14 +1,28 @@
-import { Box, Chip, IconButton, Stack, Typography } from "@mui/material";
+import { useMemo, useState } from "react";
+import {
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import MovieIcon from "@mui/icons-material/Movie";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useMovie } from "../../hooks/useMovie";
+import { useFavorites } from "../../hooks/useFavorites";
 import {
   DEFAULT_MOVIE_GENRE_COLOR,
   MOVIE_GENRE_COLORS,
 } from "../../constants/movieGenres";
 import { getMovieMeta } from "../../utils/getMovieMeta";
+import type { MovieListItem } from "../../types/movie";
+import AddToFavoritesModal from "../../components/AddToFavoritesModal";
+import { mapMovieDetailsToListItem } from "../../utils/mapMovieDetailsToListItem";
 
 const MoviePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +30,10 @@ const MoviePage = () => {
   const navigate = useNavigate();
 
   const { data: movie, isLoading, isError, error } = useMovie(id);
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+
+  const [isAddToFavoritesModalOpen, setIsAddToFavoritesModalOpen] =
+    useState(false);
 
   const errorMessage =
     error instanceof Error ? error.message : "Неизвестная ошибка";
@@ -33,6 +51,38 @@ const MoviePage = () => {
 
   const { title, posterUrl, description, rating, releaseDate, genres } =
     getMovieMeta(movie);
+
+  const favoriteMovie = useMemo(
+    () => mapMovieDetailsToListItem(movie),
+    [movie],
+  );
+
+  const isCurrentMovieFavorite = movie ? isFavorite(movie.id) : false;
+
+  const handleOpenAddToFavoritesModal = () => {
+    if (!favoriteMovie || isCurrentMovieFavorite) {
+      return;
+    }
+
+    setIsAddToFavoritesModalOpen(true);
+  };
+
+  const handleCloseAddToFavoritesModal = () => {
+    setIsAddToFavoritesModalOpen(false);
+  };
+
+  const handleConfirmAddToFavorites = (selectedMovie: MovieListItem) => {
+    addFavorite(selectedMovie);
+    handleCloseAddToFavoritesModal();
+  };
+
+  const handleRemoveFromFavorites = () => {
+    if (!movie) {
+      return;
+    }
+
+    removeFavorite(movie.id);
+  };
 
   return (
     <Box
@@ -134,6 +184,25 @@ const MoviePage = () => {
               {title}
             </Typography>
 
+            <Button
+              variant={isCurrentMovieFavorite ? "contained" : "outlined"}
+              startIcon={
+                isCurrentMovieFavorite ? (
+                  <FavoriteIcon />
+                ) : (
+                  <FavoriteBorderIcon />
+                )
+              }
+              onClick={
+                isCurrentMovieFavorite
+                  ? handleRemoveFromFavorites
+                  : handleOpenAddToFavoritesModal
+              }
+              sx={{ mb: 3 }}
+            >
+              {isCurrentMovieFavorite ? "Убрать из избранного" : "В избранное"}
+            </Button>
+
             <Stack
               direction="column"
               spacing={1.5}
@@ -232,6 +301,12 @@ const MoviePage = () => {
           </Box>
         </Box>
       )}
+      <AddToFavoritesModal
+        open={isAddToFavoritesModalOpen}
+        movie={favoriteMovie}
+        onClose={handleCloseAddToFavoritesModal}
+        onConfirm={handleConfirmAddToFavorites}
+      />
     </Box>
   );
 };

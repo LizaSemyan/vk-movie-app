@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import type { MovieListItem } from "../../types/movie";
 import {
   Box,
@@ -5,16 +6,27 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
+  IconButton,
   Typography,
 } from "@mui/material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import MovieIcon from "@mui/icons-material/Movie";
 import { Link, useLocation } from "react-router-dom";
 
 interface MovieCardProps {
   movie: MovieListItem;
+  isFavorite?: boolean;
+  onAddToFavorites?: (movie: MovieListItem) => void;
+  onRemoveFromFavorites?: (movieId: number) => void;
 }
 
-const MovieCard = ({ movie }: MovieCardProps) => {
+const MovieCard = ({
+  movie,
+  isFavorite = false,
+  onAddToFavorites,
+  onRemoveFromFavorites,
+}: MovieCardProps) => {
   const location = useLocation();
 
   const posterUrl = movie.poster?.previewUrl || movie.poster?.url;
@@ -26,9 +38,26 @@ const MovieCard = ({ movie }: MovieCardProps) => {
     sessionStorage.setItem("moviesPageScrollY", String(window.scrollY));
   };
 
+  const handleFavoriteClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (isFavorite) {
+      onRemoveFromFavorites?.(movie.id);
+      return;
+    }
+
+    onAddToFavorites?.(movie);
+  };
+
+  const canShowFavoriteButton = Boolean(
+    onAddToFavorites || onRemoveFromFavorites,
+  );
+
   return (
     <Card
       sx={{
+        position: "relative",
         height: "100%",
         display: "flex",
         flexDirection: "column",
@@ -125,6 +154,33 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           </Typography>
         </CardContent>
       </CardActionArea>
+      {canShowFavoriteButton ? (
+        <IconButton
+          aria-label={
+            isFavorite ? "Убрать из избранного" : "Добавить в избранное"
+          }
+          onClick={handleFavoriteClick}
+          disableRipple
+          disableFocusRipple
+          sx={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            width: 42,
+            height: 42,
+            zIndex: 2,
+            backgroundColor: "rgba(0, 0, 0, 0.55)",
+            backdropFilter: "blur(4px)",
+            color: "#fff",
+            border: "1px solid rgba(255,255,255,0.14)",
+            "&:hover": {
+              backgroundColor: "rgba(0, 0, 0, 0.72)",
+            },
+          }}
+        >
+          {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+        </IconButton>
+      ) : null}
     </Card>
   );
 };
