@@ -191,6 +191,7 @@ const MovieCard = ({
             width: 42,
             height: 42,
             zIndex: 2,
+            transition: "transform 0.2s ease, background-color 0.2s ease",
             backgroundColor: isInCompare
               ? "rgba(201, 209, 222, 0.92)"
               : "rgba(0, 0, 0, 0.55)",
@@ -198,6 +199,7 @@ const MovieCard = ({
             color: isInCompare ? "#161b22" : "#fff",
             border: "1px solid rgba(255,255,255,0.14)",
             "&:hover": {
+              transform: "scale(1.1)",
               backgroundColor: isInCompare
                 ? "rgba(201, 209, 222, 1)"
                 : "rgba(0, 0, 0, 0.72)",
@@ -227,7 +229,9 @@ const MovieCard = ({
             backdropFilter: "blur(4px)",
             color: "#fff",
             border: "1px solid rgba(255,255,255,0.14)",
+            transition: "transform 0.2s ease, background-color 0.2s ease",
             "&:hover": {
+              transform: "scale(1.1)",
               backgroundColor: "rgba(0, 0, 0, 0.72)",
             },
           }}
