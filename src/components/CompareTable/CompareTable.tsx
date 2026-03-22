@@ -97,6 +97,7 @@ const CompareTable = ({ comparedMovies }: CompareTableProps) => {
     <Box
       sx={{
         width: "100%",
+        overflowX: "auto",
         borderRadius: 3,
         overflow: "hidden",
         backgroundColor: "#1e1d1d",
@@ -133,7 +134,7 @@ const CompareTable = ({ comparedMovies }: CompareTableProps) => {
               },
             }}
           >
-            <Stack spacing={2} alignItems={{ xs: "flex-start", md: "center" }}>
+            <Stack spacing={2} alignItems="center">
               <Box
                 sx={{
                   width: 120,

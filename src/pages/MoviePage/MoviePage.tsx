@@ -106,7 +106,7 @@ const MoviePage = () => {
       sx={{
         maxWidth: 1100,
         mx: "auto",
-        p: 2,
+        p: { xs: "2.5%", sm: 2 },
       }}
     >
       <Box
@@ -202,7 +202,7 @@ const MoviePage = () => {
             </Typography>
 
             <Stack
-              direction="row"
+              direction={{ xs: "column", sm: "row" }}
               spacing={2}
               sx={{
                 mb: 3,
