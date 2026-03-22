@@ -1,5 +1,11 @@
 import type { ReactNode } from "react";
-import { MoviesPage, MoviePage, FavoritesPage, ComparePage } from "../../pages";
+import {
+  MoviesPage,
+  MoviePage,
+  FavoritesPage,
+  ComparePage,
+  NotFoundPage,
+} from "../../pages";
 
 export type AppRoute = {
   path?: string;
@@ -32,6 +38,11 @@ const AppRoutes: AppRoute[] = [
     element: <ComparePage />,
     label: "Сравнение",
     showInNav: true,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+    showInNav: false,
   },
 ];
 
