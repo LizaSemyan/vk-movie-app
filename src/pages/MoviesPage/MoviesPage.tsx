@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { IconButton, Fade } from "@mui/material";
 
 import { useMovies } from "../../hooks/useMovies";
 import { useMovieFilters } from "../../hooks/useMovieFilters";
@@ -25,6 +27,7 @@ const MoviesPage = () => {
   const { filters, setFilters, resetFilters } = useMovieFilters();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const [draftFilters, setDraftFilters] = useState<MovieFilters>(filters);
   const [selectedMovie, setSelectedMovie] = useState<MovieListItem | null>(
@@ -75,6 +78,25 @@ const MoviesPage = () => {
 
     sessionStorage.removeItem("moviesPageScrollY");
   }, [isLoading, location.key]);
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const observerRef = useRef<HTMLDivElement | null>(null);
 
@@ -208,6 +230,30 @@ const MoviesPage = () => {
         onClose={handleCloseAddToFavoritesModal}
         onConfirm={handleConfirmAddToFavorites}
       />
+      <Fade in={showScrollTop}>
+        <IconButton
+          onClick={handleScrollToTop}
+          sx={{
+            position: "fixed",
+            bottom: 32,
+            right: 32,
+            width: 48,
+            height: 48,
+            zIndex: 1000,
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            backdropFilter: "blur(6px)",
+            color: "#fff",
+            border: "1px solid rgba(255,255,255,0.15)",
+            "&:hover": {
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              transform: "scale(1.1)",
+            },
+            transition: "all 0.2s ease",
+          }}
+        >
+          <KeyboardArrowUpIcon />
+        </IconButton>
+      </Fade>
     </Box>
   );
 };
