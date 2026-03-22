@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { useMovies } from "../../hooks/useMovies";
 import { useMovieFilters } from "../../hooks/useMovieFilters";
 import { useFavorites } from "../../hooks/useFavorites";
+import { useCompare } from "../../hooks/useCompare";
 import { mapMovieFiltersToQueryParams } from "../../utils/mapMovieFilters";
 import {
   MovieCard,
@@ -23,6 +24,7 @@ const MoviesPage = () => {
   const location = useLocation();
   const { filters, setFilters, resetFilters } = useMovieFilters();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCompare, removeFromCompare, isInCompare } = useCompare();
 
   const [draftFilters, setDraftFilters] = useState<MovieFilters>(filters);
   const [selectedMovie, setSelectedMovie] = useState<MovieListItem | null>(
@@ -140,7 +142,7 @@ const MoviesPage = () => {
 
   return (
     <Box>
-      <Typography variant="h4" sx={{ mb: 2 }}>
+      <Typography variant="h4" sx={{ mb: 3 }}>
         Фильмы
       </Typography>
 
@@ -176,8 +178,11 @@ const MoviesPage = () => {
                   key={movie.id}
                   movie={movie}
                   isFavorite={isFavorite(movie.id)}
+                  isInCompare={isInCompare(movie.id)}
                   onAddToFavorites={handleOpenAddToFavoritesModal}
                   onRemoveFromFavorites={removeFavorite}
+                  onAddToCompare={addToCompare}
+                  onRemoveFromCompare={removeFromCompare}
                 />
               );
             })}

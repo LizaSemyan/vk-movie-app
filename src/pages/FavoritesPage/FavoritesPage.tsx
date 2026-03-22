@@ -1,9 +1,11 @@
 import { Box, Stack, Typography } from "@mui/material";
 import MovieCard from "../../components/MovieCard";
 import { useFavorites } from "../../hooks/useFavorites";
+import { useCompare } from "../../hooks/useCompare";
 
 const FavoritesPage = () => {
   const { favorites, removeFavorite } = useFavorites();
+  const { addToCompare, removeFromCompare, isInCompare } = useCompare();
 
   return (
     <Stack spacing={4} alignItems="center">
@@ -24,6 +26,7 @@ const FavoritesPage = () => {
             ml: "auto",
             mr: "auto",
             display: "flex",
+            boxSizing: "border-box",
           }}
         >
           <Typography variant="h6">Список избранного пока пуст</Typography>
@@ -47,6 +50,9 @@ const FavoritesPage = () => {
               key={movie.id}
               movie={movie}
               isFavorite
+              isInCompare={isInCompare(movie.id)}
+              onAddToCompare={addToCompare}
+              onRemoveFromCompare={removeFromCompare}
               onRemoveFromFavorites={removeFavorite}
             />
           ))}

@@ -11,21 +11,28 @@ import {
 } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import MovieIcon from "@mui/icons-material/Movie";
 import { Link, useLocation } from "react-router-dom";
 
 interface MovieCardProps {
   movie: MovieListItem;
   isFavorite?: boolean;
+  isInCompare?: boolean;
   onAddToFavorites?: (movie: MovieListItem) => void;
   onRemoveFromFavorites?: (movieId: number) => void;
+  onAddToCompare?: (movie: MovieListItem) => void;
+  onRemoveFromCompare?: (movieId: number) => void;
 }
 
 const MovieCard = ({
   movie,
   isFavorite = false,
+  isInCompare = false,
   onAddToFavorites,
   onRemoveFromFavorites,
+  onAddToCompare,
+  onRemoveFromCompare,
 }: MovieCardProps) => {
   const location = useLocation();
 
@@ -50,9 +57,23 @@ const MovieCard = ({
     onAddToFavorites?.(movie);
   };
 
+  const handleCompareClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (isInCompare) {
+      onRemoveFromCompare?.(movie.id);
+      return;
+    }
+
+    onAddToCompare?.(movie);
+  };
+
   const canShowFavoriteButton = Boolean(
     onAddToFavorites || onRemoveFromFavorites,
   );
+
+  const canShowCompareButton = Boolean(onAddToCompare || onRemoveFromCompare);
 
   return (
     <Card
@@ -154,6 +175,39 @@ const MovieCard = ({
           </Typography>
         </CardContent>
       </CardActionArea>
+
+      {canShowCompareButton ? (
+        <IconButton
+          aria-label={
+            isInCompare ? "Убрать из сравнения" : "Добавить в сравнение"
+          }
+          onClick={handleCompareClick}
+          disableRipple
+          disableFocusRipple
+          sx={{
+            position: "absolute",
+            top: 12,
+            left: 12,
+            width: 42,
+            height: 42,
+            zIndex: 2,
+            backgroundColor: isInCompare
+              ? "rgba(201, 209, 222, 0.92)"
+              : "rgba(0, 0, 0, 0.55)",
+            backdropFilter: "blur(4px)",
+            color: isInCompare ? "#161b22" : "#fff",
+            border: "1px solid rgba(255,255,255,0.14)",
+            "&:hover": {
+              backgroundColor: isInCompare
+                ? "rgba(201, 209, 222, 1)"
+                : "rgba(0, 0, 0, 0.72)",
+            },
+          }}
+        >
+          <CompareArrowsIcon />
+        </IconButton>
+      ) : null}
+
       {canShowFavoriteButton ? (
         <IconButton
           aria-label={

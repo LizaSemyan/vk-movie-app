@@ -11,10 +11,12 @@ import MovieIcon from "@mui/icons-material/Movie";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useMovie } from "../../hooks/useMovie";
 import { useFavorites } from "../../hooks/useFavorites";
+import { useCompare } from "../../hooks/useCompare";
 import {
   DEFAULT_MOVIE_GENRE_COLOR,
   MOVIE_GENRE_COLORS,
@@ -31,6 +33,7 @@ const MoviePage = () => {
 
   const { data: movie, isLoading, isError, error } = useMovie(id);
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCompare, removeFromCompare, isInCompare } = useCompare();
 
   const [isAddToFavoritesModalOpen, setIsAddToFavoritesModalOpen] =
     useState(false);
@@ -58,6 +61,7 @@ const MoviePage = () => {
   );
 
   const isCurrentMovieFavorite = movie ? isFavorite(movie.id) : false;
+  const isCurrentMovieInCompare = movie ? isInCompare(movie.id) : false;
 
   const handleOpenAddToFavoritesModal = () => {
     if (!favoriteMovie || isCurrentMovieFavorite) {
@@ -82,6 +86,19 @@ const MoviePage = () => {
     }
 
     removeFavorite(movie.id);
+  };
+
+  const handleToggleCompare = () => {
+    if (!movie) {
+      return;
+    }
+
+    if (isCurrentMovieInCompare) {
+      removeFromCompare(movie.id);
+      return;
+    }
+
+    addToCompare(movie);
   };
 
   return (
@@ -184,24 +201,47 @@ const MoviePage = () => {
               {title}
             </Typography>
 
-            <Button
-              variant={isCurrentMovieFavorite ? "contained" : "outlined"}
-              startIcon={
-                isCurrentMovieFavorite ? (
-                  <FavoriteIcon />
-                ) : (
-                  <FavoriteBorderIcon />
-                )
-              }
-              onClick={
-                isCurrentMovieFavorite
-                  ? handleRemoveFromFavorites
-                  : handleOpenAddToFavoritesModal
-              }
-              sx={{ mb: 3 }}
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                mb: 3,
+                flexWrap: "wrap",
+                ml: "auto",
+                mr: "auto",
+                width: "fit-content",
+              }}
             >
-              {isCurrentMovieFavorite ? "Убрать из избранного" : "В избранное"}
-            </Button>
+              <Button
+                variant={isCurrentMovieFavorite ? "contained" : "outlined"}
+                startIcon={
+                  isCurrentMovieFavorite ? (
+                    <FavoriteIcon />
+                  ) : (
+                    <FavoriteBorderIcon />
+                  )
+                }
+                onClick={
+                  isCurrentMovieFavorite
+                    ? handleRemoveFromFavorites
+                    : handleOpenAddToFavoritesModal
+                }
+                sx={{ mb: 3 }}
+              >
+                {isCurrentMovieFavorite
+                  ? "Убрать из избранного"
+                  : "В избранное"}
+              </Button>
+              <Button
+                variant={isCurrentMovieInCompare ? "contained" : "outlined"}
+                startIcon={<CompareArrowsIcon />}
+                onClick={handleToggleCompare}
+              >
+                {isCurrentMovieInCompare
+                  ? "Убрать из сравнения"
+                  : "Добавить к сравнению"}
+              </Button>
+            </Stack>
 
             <Stack
               direction="column"
