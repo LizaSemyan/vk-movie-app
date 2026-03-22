@@ -1,73 +1,69 @@
-# React + TypeScript + Vite
+# Movie App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SPA приложение для просмотра информации о фильмах, использующее открытое API [ПоискКино API](https://poiskkino.dev).
 
-Currently, two official plugins are available:
+## Ссылки на проект
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Live-demo:** [https://vk-movie-app-omega.vercel.app](https://vk-movie-app-omega.vercel.app)
 
-## React Compiler
+**GitHub repository:** [https://github.com/LizaSemyan/vk-movie-app](https://github.com/LizaSemyan/vk-movie-app)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Технологический стек
 
-## Expanding the ESLint configuration
+Используемые технологии:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- React
+- TypeScript
+- Vite
+- React Router
+- TanStack Query
+- Material UI Kit
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Функционал
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+В приложении реализованы следующие возможности:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Просмотр списка фильмов с возможностью фильтрации и бесконечным скроллом
+- Просмотр информации о фильме
+- Добавление фильмов в избранное (с сохранением в localStorage)
+- Сравнение двух фильмов
+
+## Запуск проекта
+
+### 1. Клонировать репозиторий
+
+```bash
+git clone https://github.com/LizaSemyan/vk-movie-app.git
+cd vk-movie-app
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Установить зависимости
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 3. Запустить проект
+
+```bash
+npm run dev
+```
+
+После запуска приложение будет доступно по адресу:
+
+```
+http://localhost:5173
+```
+
+## Переменные окружения
+
+Для работы с API необходимо создать файл `.env` в корне проекта. Пример есть в файле .env.default
+
+Пример содержимого:
+
+```
+VITE_API_URL=https://api.poiskkino.dev
+VITE_API_KEY=YOUR_API_KEY
+```
+
+Для получения ключа перейдите на сайт [ПоискКино API](https://poiskkino.dev) и следуйте инструкции
